@@ -1,0 +1,15 @@
+mqtt:
+  broker:
+    url: tcp://192.168.178.31:1883
+    username: admin
+    password: 1234
+  topics:
+    filename: topics.txt
+logging:
+  file:
+    name: logs/application.log
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/
+      database: sensor_data

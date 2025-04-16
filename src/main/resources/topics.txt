@@ -1,0 +1,3 @@
+app/sensor/temperature
+app/sensor/humidity
+app/status/battery
