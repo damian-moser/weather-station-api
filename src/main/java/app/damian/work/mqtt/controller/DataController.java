@@ -1,6 +1,6 @@
 package app.damian.work.mqtt.controller;
 
-import app.damian.work.mqtt.service.DatabaseService;
+import app.damian.work.mqtt.service.DataService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,18 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/data")
 public class DataController {
 
-    private final DatabaseService databaseService;
+    private final DataService dataService;
 
-    public DataController(DatabaseService databaseService) {
-        this.databaseService = databaseService;
+    public DataController(DataService databaseService) {
+        this.dataService = databaseService;
     }
 
     @GetMapping
     public ResponseEntity<?> getData(@RequestParam(required = false) String type) {
         if (type != null) {
-            return ResponseEntity.ok(databaseService.getSensorDataByType(type));
+            return ResponseEntity.ok(this.dataService.getSensorDataByType(type));
         } else {
-            return ResponseEntity.ok(databaseService.getAllSensorData());
+            return ResponseEntity.ok(this.dataService.getAllSensorData());
         }
+    }
+
+    @GetMapping("/topics")
+    public ResponseEntity<?> getTopics() {
+        return ResponseEntity.ok(this.dataService.getTopics());
     }
 }

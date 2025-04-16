@@ -8,23 +8,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DatabaseService {
+public class DataServiceImpl implements DataService {
 
     private final SensorDataRepository sensorDataRepository;
+    private final TopicService topicService;
 
-    public DatabaseService(SensorDataRepository temperatureRepository) {
+    public DataServiceImpl(SensorDataRepository temperatureRepository, TopicService topicService) {
         this.sensorDataRepository = temperatureRepository;
+        this.topicService = topicService;
     }
 
     public List<SensorDataDto> getAllSensorData() {
-        final List<SensorData> sensorData = sensorDataRepository.findAll();
+        final List<SensorData> sensorData = this.sensorDataRepository.findAll();
         return sensorData.stream()
                 .map(SensorDataDto::new)
                 .toList();
     }
 
     public List<SensorDataDto> getSensorDataByType(String type) {
-        final List<SensorData> sensorData = sensorDataRepository.findAllByType(type);
+        final List<SensorData> sensorData = this.sensorDataRepository.findAllByType(type);
         return sensorData.stream()
                 .map(SensorDataDto::new)
                 .toList();
@@ -32,5 +34,9 @@ public class DatabaseService {
 
     public void insertData(SensorData sensorData) {
         this.sensorDataRepository.insert(sensorData);
+    }
+
+    public List<String> getTopics() {
+        return this.topicService.getTopics();
     }
 }

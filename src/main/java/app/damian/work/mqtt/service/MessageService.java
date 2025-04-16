@@ -19,9 +19,9 @@ public class MessageService {
     private static final Logger logger = LogManager.getLogger(MessageService.class);
 
     private final TopicService topicService;
-    private final DatabaseService databaseService;
+    private final DataServiceImpl databaseService;
 
-    public MessageService(TopicService topicService, DatabaseService databaseService) {
+    public MessageService(TopicService topicService, DataServiceImpl databaseService) {
         this.topicService = topicService;
         this.databaseService = databaseService;
     }
@@ -37,18 +37,18 @@ public class MessageService {
 
         try {
             final String json = message.getPayload().toString();
-            WebSocketHandler.sendToAll(json);
-
             final ObjectMapper mapper = new ObjectMapper();
             final DataFromSensor sensor = mapper.readValue(json, DataFromSensor.class);
 
             final SensorData sensorData = new SensorData();
             sensorData.setSensorId(sensor.getSensorId());
-            sensorData.setType(sensor.getType());
+            sensorData.setType(topic);
             sensorData.setValue(sensor.getValue());
             sensorData.setUnit(sensor.getUnit());
             sensorData.setTimestamp(sensor.getTimestamp());
 
+            final String sensorDataJson = mapper.writeValueAsString(sensorData);
+            WebSocketHandler.sendToAll(sensorDataJson);
             this.databaseService.insertData(sensorData);
         } catch (JsonProcessingException e) {
             logger.error("Json processing error", e);
